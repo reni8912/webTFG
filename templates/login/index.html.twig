@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login de Usuario{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+        
+        label {
+            font-weight: bold;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #555;
+        }
+        
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #0069d9;
+        }
+        
+        .error-message {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #dc3545;
+            color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <h2 class="text-center mb-5">Inicia Sesión</h2>
+                {% if error %}
+                    <div class="error-message">{{ error.messageKey|trans(error.messageData, 'security') }}</div><br>
+                {% endif %}
+                <form action="{{ path('app_login') }}" method="post">
+                    <div class="form-group">
+                        <label for="username">Correo</label>
+                        <input type="email" class="form-control" id="username" value="{{ last_username }}" name="_username" placeholder="tucorreo@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control " id="password" name="_password" placeholder="******************">
+                    </div>
+                    <input type="hidden" name="_target_path" value="/">
+                    <button type="submit" class="btn btn-primary mt-2 mb-3">Entrar</button> 
+                    ¿No tienes cuenta? <a href="{{ path('register') }}">Regístrate</a>
+                </form> 
+            </div> 
+        </div>
+    </div>
+{% endblock %}
