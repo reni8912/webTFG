@@ -7,7 +7,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\UserS;
-use GeoIp2\Database\Reader;
+use Symfony\Component\HttpFoundation\Request;
+use GuzzleHttp\Client;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 
 class SellerController extends AbstractController
@@ -18,11 +21,18 @@ class SellerController extends AbstractController
         $encodedImage = base64_encode($data);
         return $encodedImage;
     }
+    
 
-    #[Route('', name: 'tiendas')]
-    public function tiendas(ManagerRegistry $doctrine): Response
+    #[Route('', name: 'index')]
+    public function index(PaginatorInterface $paginator,ManagerRegistry $doctrine,Request $request, Client $httpClient): Response
     {
-        $users = $doctrine->getRepository(UserS::class)->findAll();
+
+        $response = $httpClient->get('http://ip-api.com/json/');
+        $result = json_decode($response->getBody()->getContents(), true);
+        $city = $result['city'];
+
+        $users = $doctrine->getRepository(UserS::class)->findBy(['city' => $city],['id' => 'ASC']);
+        
     
         $sellers = [];
     
@@ -33,12 +43,46 @@ class SellerController extends AbstractController
                 'encodedImage' => $encodedImage
             ];
         }
+        $pagination = $paginator->paginate(
+            $sellers,
+            $request->query->getInt('page', 1),
+            4
+        );
     
         return $this->render('seller/index.html.twig', [
-            'sellers' => $sellers
+            'sellers' => $pagination
         ]);
     }
 
+    #[Route('filtrado/{type}', name: 'filtro')]
+    public function filtro(PaginatorInterface $paginator,$type, ManagerRegistry $doctrine,Request $request, Client $httpClient): Response
+    {
+
+        $response = $httpClient->get('http://ip-api.com/json/');
+        $result = json_decode($response->getBody()->getContents(), true);
+        $city = $result['city'];
+
+        $users = $doctrine->getRepository(UserS::class)->findBy(['city' => $city, 'type' => $type],['id' => 'ASC']);
+        shuffle($users);
     
+        $sellers = [];
+    
+        foreach ($users as $user) {
+            $encodedImage = $this->encodeImage($user->getImage());
+            $sellers[] = [
+                'user' => $user,
+                'encodedImage' => $encodedImage
+            ];
+        }
+        $pagination = $paginator->paginate(
+            $sellers,
+            $request->query->getInt('page', 1),
+            4
+        );
+    
+        return $this->render('seller/index.html.twig', [
+            'sellers' => $pagination
+        ]);
+    }
     
 }

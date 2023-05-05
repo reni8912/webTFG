@@ -17,6 +17,7 @@ class UserBType extends AbstractType
             ->add('password')
             ->add('name')
             ->add('lastname')
+            ->add('address')
             ->add('roles', ChoiceType::class, [
                 'multiple' => true,
                 'choices' => [

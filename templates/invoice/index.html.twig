@@ -15,6 +15,101 @@
 {% block body %}
     {{ parent() }}
 
+    <h1 class="text-dark mx-auto text-center mt-5">Facturas</h1>
+
+{% set counter = 0 %}
+    {% for invoice in invoices %}
     
+<div id="my-div-{{ counter }}">
+    <div class="container pb-1">
+  <div class="card my-5">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-6">
+          <h4>{{invoice.description}}</h4>
+        </div>
+        <div class="col-6 text-end">
+          <h4>Factura #{{ invoice.id}}</h4>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="pb-2">Información del Cliente:</h5>
+          <p>{{ invoice.userB.name}} {{invoice.userB.lastname}}</p>
+          <p>{{invoice.userB.address}}</p>
+          <p>{{invoice.userB.email}}</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <h5 class="pb-2">Información del Proveedor:</h5>
+          <p>{{ invoice.userS.premisesName}}</p>
+          <p>{{ invoice.userS.address}}</p>
+          <p>{{ invoice.userS.email}}</p>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Precio Unitario</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>{{invoice.description}}</td>
+              <td>1</td>
+              <td>${{ invoice.money}}</td>
+              <td>${{ invoice.money}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-6">
+          <p class="lead">Notas adicionales:</p>
+          <p>Esta factura fue creada el día: {{invoice.creationDate | date}}</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <p class="lead">Total:</p>
+          <p>${{ invoice.money}}</p>
+        </div>
+      </div>  
+    </div><button class="btn btn-secondary" onclick="downloadPdf('{{ counter }}')">Descargar PDF</button>
+  </div>
+</div></div>
+  {% set counter = counter + 1 %}
+
+    {% endfor %}
+
+    
+{% endblock %}
+
+{% block javascripts %}
+{{parent()}} 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
+<script>
+function downloadPdf(divId) {
+  // Captura el div y lo convierte en imagen utilizando html2canvas
+  html2canvas(document.getElementById('my-div-' + divId)).then(function(canvas) {
+    // Crea un objeto jsPDF y añade la imagen capturada
+    var pdf = new jsPDF();
+    var imgWidth = pdf.internal.pageSize.getWidth() - 40; // Ancho de la página PDF con margen
+    var imgHeight = canvas.height * imgWidth / canvas.width ; // Calcula la altura proporcional a la imagen
+    var position =  (pdf.internal.pageSize.getHeight() - imgHeight) / 2; // Calcula la posición vertical centrada
+    pdf.addImage(canvas.toDataURL('image/PNG'), 'PNG', 20, position, imgWidth, imgHeight); // Añade la imagen al PDF con margen izquierdo de 20
+    pdf.save('Factura_' + (++divId) + '.pdf'); // Descarga el PDF
+  });
+}
+
+</script>
 
 {% endblock %}

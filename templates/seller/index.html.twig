@@ -1,68 +1,91 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tiendas{% endblock %}
+{% block title %}Tiendas
+{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <style>
-         body {
-            background-color: #f5f5f5;
-        }
-        .card-size {
-  width: 400px;
- }
-    </style>
+	{{ parent() }}
+  <link rel="stylesheet" href="{{ asset('bundles/knppaginatorbundle/css/styles.css') }}" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<style>
+		body {
+			background-color: #f5f5f5;
+		}
+		.card-size {
+			width: 400px;
+		}
+	</style>
 {% endblock %}
 
 {% block body %}
-    {{ parent() }}
-<div class="container my-4">
-  <div class="row justify-content-center">
-    <div class="col-md-6 ">
-      <div class="btn-group d-flex ml-4 mr-3 mt-2 mb-2">
-        <h4 class="mr-3 mt-1">Filtros: </h4>
-        <button type="button" class="btn btn-primary border-dark" data-bs-toggle="collapse" data-bs-target="#list1" aria-expanded="false" aria-controls="list1">Ciudad</button>
-        <button type="button" class="btn btn-primary border-dark" data-bs-toggle="collapse" data-bs-target="#list2" aria-expanded="false" aria-controls="list2">Tipo</button>
-      </div>
-    </div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="collapse" id="list1">
-        <div class="card card-body">
-          <ul>
-            <li>Madrid</li>
-            <li>Barcelona</li>
-            <li>Valencia</li>
-          </ul>
-        </div>
-      </div>
-      <div class="collapse" id="list2">
-        <div class="card card-body">
-          <ul>
-            <li>Peluquería</li>
-            <li>Belleza</li>
-            <li>Alimentación</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+	{{ parent() }}
+	<div class="container my-4">
+		<div class="row justify-content-center">
+			<div class="col-md-6 ">
+				<div class="btn-group d-flex ml-4 mr-3 mt-2 mb-2">
+					<h4 class="mr-3 mt-1">Filtro:
+					</h4>
+					<button type="button" class="btn btn-primary border-dark" data-bs-toggle="collapse" data-bs-target="#list2" aria-expanded="false" aria-controls="list2">Tipo</button>
+				</div>
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="col-md-6">
+				<div class="collapse mt-3" id="list2">
+					<div class="card card-body">
+						<ul>
+							<li class="p-1">
+								<h5>
+									<a href="{{ path('filtro', {'type': 'Peluqueria'}) }}">Peluquería</a>
+								</h5>
+							</li>
+							<li class="p-1">
+								<h5>
+									<a href="{{ path('filtro', {'type': 'Belleza'}) }}">Belleza</a>
+								</h5>
+							</li>
+							<li class="pt-1 pl-1 pr-1">
+								<a href="{{ path('filtro', {'type': 'Mecanico'}) }}">
+									<h5>Mecánico</a>
+								</h5>
+							</li>
+							{% if app.request.get('_route') != 'index' %}
+								<li class="pt-1 pl-1 pr-1">
+									<a href="{{ path('index') }}" class="text-danger">
+										<h5>Quitar Filtro</h5>
+									</a>
+								</li>
+							{% endif %}
 
-  {% for seller in sellers %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% for seller in sellers %}
     <div class="container my-4">
         <div class="d-flex justify-content-center">
-            <div class="card mx-auto card-size">
-                <img src="data:image/png;base64,{{ seller.encodedImage|raw }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ seller.user.premisesName }}</h5>
-                    <p class="card-text">{{ seller.user.address }}</p>
+            <a href="https://www.google.com/maps/search/'{{seller.user.address}}'" target="_blank" style="text-decoration: none; color: inherit;">
+                <div class="card mx-auto card-size">
+                    <img src="data:image/png;base64,{{ seller.encodedImage|raw }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ seller.user.premisesName }}</h5>
+                        <p class="card-text">{{ seller.user.address }}</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 {% endfor %}
+
+<div class="d-flex justify-content-center">
+    <div class="pagination">
+        {{ knp_pagination_render(sellers) }}
+    </div>
+</div>
+
+
 
 {% endblock %}

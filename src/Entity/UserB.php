@@ -38,6 +38,9 @@ class UserB implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userB', targetEntity: Invoice::class)]
     private Collection $invoices;
 
+    #[ORM\Column(length: 255)]
+    private ?string $address = null;
+
     public function __construct()
     {
         $this->invoices = new ArrayCollection();
@@ -163,6 +166,18 @@ class UserB implements UserInterface, PasswordAuthenticatedUserInterface
                 $invoice->setUserB(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }
