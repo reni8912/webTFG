@@ -103,12 +103,19 @@ function downloadPdf(divId) {
     // Crea un objeto jsPDF y añade la imagen capturada
     var pdf = new jsPDF();
     var imgWidth = pdf.internal.pageSize.getWidth() - 40; // Ancho de la página PDF con margen
-    var imgHeight = canvas.height * imgWidth / canvas.width ; // Calcula la altura proporcional a la imagen
-    var position =  (pdf.internal.pageSize.getHeight() - imgHeight) / 2; // Calcula la posición vertical centrada
-    pdf.addImage(canvas.toDataURL('image/PNG'), 'PNG', 20, position, imgWidth, imgHeight); // Añade la imagen al PDF con margen izquierdo de 20
+    var imgHeight = canvas.height * imgWidth / canvas.width; // Calcula la altura proporcional a la imagen
+    if (imgHeight > pdf.internal.pageSize.getHeight()) {
+      imgHeight = pdf.internal.pageSize.getHeight() - 40; // Limita la altura al alto de la página del PDF
+      imgWidth = canvas.width * imgHeight / canvas.height; // Ajusta el ancho proporcionalmente
+    }
+    var positionX = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; // Calcula la posición horizontal centrada
+    var positionY = (pdf.internal.pageSize.getHeight() - imgHeight) / 2; // Calcula la posición vertical centrada
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', positionX, positionY, imgWidth, imgHeight); // Añade la imagen al PDF centrada
     pdf.save('Factura_' + (++divId) + '.pdf'); // Descarga el PDF
   });
 }
+
+
 
 </script>
 
