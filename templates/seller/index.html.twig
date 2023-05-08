@@ -63,14 +63,13 @@
 			</div>
 		</div>
 	</div>
-
-	{% for seller in sellers %}
+{% for seller in sellers %}
     <div class="container my-4">
         <div class="d-flex justify-content-center">
             <a href="https://www.google.com/maps/search/'{{seller.user.address}}'" target="_blank" style="text-decoration: none; color: inherit;">
                 <div class="card mx-auto card-size">
                     <img src="data:image/png;base64,{{ seller.encodedImage|raw }}">
-                    <div class="card-body">
+                    	<div class="card-body">
                         <h5 class="card-title">{{ seller.user.premisesName }}</h5>
                         <p class="card-text">{{ seller.user.address }}</p>
                     </div>
