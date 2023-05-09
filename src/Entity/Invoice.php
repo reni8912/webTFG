@@ -29,6 +29,9 @@ class Invoice
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $creationDate = null;
 
+    #[ORM\ManyToOne(inversedBy: 'invoices')]
+    private ?InvoiceState $state = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +93,18 @@ class Invoice
     public function setCreationDate(\DateTimeInterface $creationDate): self
     {
         $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    public function getState(): ?InvoiceState
+    {
+        return $this->state;
+    }
+
+    public function setState(?InvoiceState $state): self
+    {
+        $this->state = $state;
 
         return $this;
     }

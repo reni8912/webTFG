@@ -29,9 +29,9 @@ class SellerController extends AbstractController
 
         $response = $httpClient->get('http://ip-api.com/json/');
         $result = json_decode($response->getBody()->getContents(), true);
-        $city = $result['city'];
+        $city = $result['regionName'];
 
-        $users = $doctrine->getRepository(UserS::class)->findBy(['city' => $city],['id' => 'ASC']);
+        $users = $doctrine->getRepository(UserS::class)->findBy(['city' => 'Madrid'],['id' => 'ASC']);
         
     
         $sellers = [];
@@ -60,10 +60,10 @@ class SellerController extends AbstractController
 
         $response = $httpClient->get('http://ip-api.com/json/');
         $result = json_decode($response->getBody()->getContents(), true);
-        $city = $result['city'];
-
+        $city = $result['regionName'];
+        
         $users = $doctrine->getRepository(UserS::class)->findBy(['city' => $city, 'type' => $type],['id' => 'ASC']);
-        shuffle($users);
+       
     
         $sellers = [];
     

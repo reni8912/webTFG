@@ -57,9 +57,13 @@ class UserS implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
+    #[ORM\OneToMany(mappedBy: 'userS', targetEntity: Service::class)]
+    private Collection $services;
+
     public function __construct()
     {
         $this->invoices = new ArrayCollection();
+        $this->services = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -254,6 +258,36 @@ class UserS implements UserInterface, PasswordAuthenticatedUserInterface
     public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): self
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setUserS($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): self
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getUserS() === $this) {
+                $service->setUserS(null);
+            }
+        }
 
         return $this;
     }

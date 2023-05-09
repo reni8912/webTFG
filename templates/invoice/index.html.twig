@@ -81,7 +81,12 @@
           <p>${{ invoice.money}}</p>
         </div>
       </div>  
-    </div><button class="btn btn-secondary" onclick="downloadPdf('{{ counter }}')">Descargar PDF</button>
+    </div><div style="display:flex;">
+    <button class="btn btn-secondary" onclick="downloadPdf('{{ counter }}')" style="flex:1;">Descargar PDF</button>
+    {% if invoice.state.id == 2 %}<a href="{{ path('stripe', {id: invoice.id}) }}" class="btn btn-success" style="flex:1;">Pagar</a>{% elseif invoice.state.id == 3 %}
+                                  <button class="btn btn-danger" disabled style="flex:1;">Rechazado </button> {% endif %}
+     
+</div>
   </div>
 </div></div>
   {% set counter = counter + 1 %}
