@@ -15,7 +15,9 @@ use Knp\Component\Pager\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Stripe;
 use Stripe\Charge;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Core\Security;
+ 
 
 
 class InvoiceController extends AbstractController
@@ -40,12 +42,18 @@ class InvoiceController extends AbstractController
 
 
     #[Route('/createInvoice/{userS}/{money}/{description}', name: 'createInvoice')]
-public function createInvoice($userB, $userS, $money, $description, Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
+    #[IsGranted("ROLE_USER")]
+public function createInvoice( $userS, Security $security, $money, $description, Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
 {
+
+    $userS = str_replace("7b6X", ".", $userS);
+    $money = str_replace("7b6X",".", $money);
+    $description = str_replace("7b6X", ".", $description);
 
     $invoice = new Invoice();
 
-    $b =  $this->getUser();
+    $b = $security->getUser();
+
     $s =  $doctrine->getRepository(userS::class)->findOneBy(['email'=>$userS]);
     $p =  $doctrine->getRepository(InvoiceState::class)->findOneBy(['id'=>2]);
 
@@ -60,7 +68,7 @@ public function createInvoice($userB, $userS, $money, $description, Request $req
     $entityManager->persist($invoice); 
     $entityManager->flush();
 
-    return $this->redirectToRoute('index');
+    return $this->redirectToRoute('facturas');
 
 }
   

@@ -1,127 +1,164 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Facturas{% endblock %}
+{% block title %}Facturas
+{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <style>
-         body {
-            background-color: #f5f5f5;
+	{{ parent() }}
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<style>
+		body {
+			background-color: #f5f5f5;
+		}
+       .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
         }
-    </style>
+	</style>
 {% endblock %}
 
 {% block body %}
-    {{ parent() }}
+	{{ parent() }}
 
-    <h1 class="text-dark mx-auto text-center mt-5">Facturas</h1>
-
-{% set counter = 0 %}
-    {% for invoice in invoices %}
+    <div class="toast-container">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+            <div class="toast-header">
+                <strong class="mr-auto">Información</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                Para cualquier apelación ante una factura, contacte con <a href="mailto:MasterBills@masterb.com">MasterBills@masterb.com</a>
+            </div>
+        </div>
+    </div>
     
-<div id="my-div-{{ counter }}">
-    <div class="container pb-1">
-  <div class="card my-5">
-    <div class="card-body">
-      <div class="row">
-        <div class="col-6">
-          <h4>{{invoice.description}}</h4>
-        </div>
-        <div class="col-6 text-end">
-          <h4>Factura #{{ invoice.id}}</h4>
-        </div>
-      </div>
-      <hr>
-      <div class="row">
-        <div class="col-md-6">
-          <h5 class="pb-2">Información del Cliente:</h5>
-          <p>{{ invoice.userB.name}} {{invoice.userB.lastname}}</p>
-          <p>{{invoice.userB.address}}</p>
-          <p>{{invoice.userB.email}}</p>
-        </div>
-        <div class="col-md-6 text-md-end">
-          <h5 class="pb-2">Información del Proveedor:</h5>
-          <p>{{ invoice.userS.premisesName}}</p>
-          <p>{{ invoice.userS.address}}</p>
-          <p>{{ invoice.userS.email}}</p>
-        </div>
-      </div>
-      <hr>
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Descripción</th>
-              <th scope="col">Cantidad</th>
-              <th scope="col">Precio Unitario</th>
-              <th scope="col">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>{{invoice.description}}</td>
-              <td>1</td>
-              <td>${{ invoice.money}}</td>
-              <td>${{ invoice.money}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <hr>
-      <div class="row">
-        <div class="col-md-6">
-          <p class="lead">Notas adicionales:</p>
-          <p>Esta factura fue creada el día: {{invoice.creationDate | date}}</p>
-        </div>
-        <div class="col-md-6 text-md-end">
-          <p class="lead">Total:</p>
-          <p>${{ invoice.money}}</p>
-        </div>
-      </div>  
-    </div><div style="display:flex;">
-    <button class="btn btn-secondary" onclick="downloadPdf('{{ counter }}')" style="flex:1;">Descargar PDF</button>
-    {% if invoice.state.id == 2 %}<a href="{{ path('stripe', {id: invoice.id}) }}" class="btn btn-success" style="flex:1;">Pagar</a>{% elseif invoice.state.id == 3 %}
-                                  <button class="btn btn-danger" disabled style="flex:1;">Rechazado </button> {% endif %}
-     
-</div>
-  </div>
-</div></div>
-  {% set counter = counter + 1 %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7qEW/CqDzGNl+5h1t1l5Zn4YD0HEldzmg6Z2vAoM6XkFex1x" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJwj8EY3F/m9pCkWqzxyRjsO00pCw2oq6Bauy4pCyf4gj3A8rVw2n" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEa0k5Elggg/NiqenYUew+Orb6+E" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            $('.toast').toast('show');
+            $('.toast .close').on('click', function() {
+                $(this).closest('.toast').toast('hide');
+            });
+        });
+    </script>
+	<h1 class="text-dark mx-auto text-center mt-5">Facturas</h1>
 
-    {% endfor %}
+	{% set counter = 0 %}
+	{% for invoice in invoices %}
 
-    
+		<div id="my-div-{{ counter }}">
+			<div class="container pb-1">
+				<div class="card my-5">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-6">
+								<h4>{{invoice.description}}</h4>
+							</div>
+							<div class="col-6 text-end">
+								<h4>Factura #{{ invoice.id}}</h4>
+							</div>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="col-md-6">
+								<h5 class="pb-2">Información del Cliente:</h5>
+								<p>{{ invoice.userB.name}}
+									{{invoice.userB.lastname}}</p>
+								<p>{{invoice.userB.address}}</p>
+								<p>{{invoice.userB.email}}</p>
+							</div>
+							<div class="col-md-6 text-md-end">
+								<h5 class="pb-2">Información del Proveedor:</h5>
+								<p>{{ invoice.userS.premisesName}}</p>
+								<p>{{ invoice.userS.address}}</p>
+								<p>{{ invoice.userS.email}}</p>
+							</div>
+						</div>
+						<hr>
+						<div class="table-responsive">
+							<table class="table">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Descripción</th>
+										<th scope="col">Cantidad</th>
+										<th scope="col">Precio Unitario</th>
+										<th scope="col">Total</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<th scope="row">1</th>
+										<td>{{invoice.description}}</td>
+										<td>1</td>
+										<td>${{ invoice.money}}</td>
+										<td>${{ invoice.money}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="col-md-6">
+								<p class="lead">Notas adicionales:</p>
+								<p>Esta factura fue creada el día:
+									{{invoice.creationDate | date}}</p>
+							</div>
+							<div class="col-md-6 text-md-end">
+								<p class="lead">Total:</p>
+								<p>${{ invoice.money}}</p>
+							</div>
+						</div>
+					</div>
+					<div style="display:flex;">
+						<button class="btn btn-secondary" onclick="downloadPdf('{{ counter }}')" style="flex:1;">Descargar PDF</button>
+						{% if invoice.state.id == 2 %}
+							<a href="{{ path('stripe', {id: invoice.id}) }}" class="btn btn-success" style="flex:1;">Pagar</a>
+						{% elseif invoice.state.id == 3 %}
+							<button class="btn btn-danger" disabled style="flex:1;">Rechazado
+							</button>
+						{% endif %}
+
+					</div>
+				</div>
+			</div>
+		</div>
+		{% set counter = counter + 1 %}
+
+	{% endfor %}
+
+
 {% endblock %}
 
 {% block javascripts %}
-{{parent()}} 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+	{{parent()}}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
+	<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
 
-<script>
-function downloadPdf(divId) {
-  // Captura el div y lo convierte en imagen utilizando html2canvas
-  html2canvas(document.getElementById('my-div-' + divId)).then(function(canvas) {
-    // Crea un objeto jsPDF y añade la imagen capturada
-    var pdf = new jsPDF();
-    var imgWidth = pdf.internal.pageSize.getWidth() - 40; // Ancho de la página PDF con margen
-    var imgHeight = canvas.height * imgWidth / canvas.width; // Calcula la altura proporcional a la imagen
-    if (imgHeight > pdf.internal.pageSize.getHeight()) {
-      imgHeight = pdf.internal.pageSize.getHeight() - 40; // Limita la altura al alto de la página del PDF
-      imgWidth = canvas.width * imgHeight / canvas.height; // Ajusta el ancho proporcionalmente
-    }
-    var positionX = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; // Calcula la posición horizontal centrada
-    var positionY = (pdf.internal.pageSize.getHeight() - imgHeight) / 2; // Calcula la posición vertical centrada
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', positionX, positionY, imgWidth, imgHeight); // Añade la imagen al PDF centrada
-    pdf.save('Factura_' + (++divId) + '.pdf'); // Descarga el PDF
-  });
+	<script>
+		function downloadPdf(divId) { // Captura el div y lo convierte en imagen utilizando html2canvas
+html2canvas(document.getElementById('my-div-' + divId)).then(function (canvas) { // Crea un objeto jsPDF y añade la imagen capturada
+var pdf = new jsPDF();
+var imgWidth = pdf.internal.pageSize.getWidth() - 40; // Ancho de la página PDF con margen
+var imgHeight = canvas.height * imgWidth / canvas.width; // Calcula la altura proporcional a la imagen
+if (imgHeight > pdf.internal.pageSize.getHeight()) {
+imgHeight = pdf.internal.pageSize.getHeight() - 40; // Limita la altura al alto de la página del PDF
+imgWidth = canvas.width * imgHeight / canvas.height; // Ajusta el ancho proporcionalmente
 }
-
-
-
-</script>
+var positionX = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; // Calcula la posición horizontal centrada
+var positionY = (pdf.internal.pageSize.getHeight() - imgHeight) / 2; // Calcula la posición vertical centrada
+pdf.addImage(canvas.toDataURL('image/png'), 'PNG', positionX, positionY, imgWidth, imgHeight); // Añade la imagen al PDF centrada
+pdf.save('Factura_' + (
+++ divId
+) + '.pdf'); // Descarga el PDF
+});
+}
+	</script>
 
 {% endblock %}
