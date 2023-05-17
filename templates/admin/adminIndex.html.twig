@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+         body {
+            background-color: #f5f5f5;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block body %}
+{{ parent() }}
+    <div class="container">
+
+
+    </div>
+{% endblock %}
+
+
+{% block javascripts %}
+{{parent()}}
+
+
+{% endblock %}

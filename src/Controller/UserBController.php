@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\UserB;
+use App\Entity\Invoice;
 use App\Form\UserBType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -54,4 +56,25 @@ class UserBController extends AbstractController
         ]);
     }
 
+    #[Route('/profile', name: 'chart')]
+    public function chart(Request $request,ManagerRegistry $doctrine): Response
+    {
+        $invoice = $doctrine->getRepository(Invoice::class)->findBy(['userB' => $this->getUser()]);
+        $datos = [];
+        
+        foreach ($invoice as $invoice) {
+            $datos[] = [
+                'fecha' => $invoice->getCreationDate()->format('Y-m-d H:i:s'), 
+                'precio' => $invoice->getMoney(),
+            ];
+        }
+        
+       
+        $datosJson = json_encode($datos);
+        
+        return $this->render('user_b/profile.html.twig', [
+            'datosJson' => $datosJson,
+        ]);
+    }
 }
+

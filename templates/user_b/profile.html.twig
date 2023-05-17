@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+         body {
+            background-color: #f5f5f5;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+{{ parent() }}
+    <div class="container">
+        <h1 class="text-dark m-4 mt-5" style="text-align: center; font-family: Arial, sans-serif;">Gastos de {{ app.user.name }}</h1>
+        <div id="chart" style="display: flex; justify-content: center;">
+    </div>
+{% endblock %}
+
+
+{% block javascripts %}
+{{parent()}}
+    <script>
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+       function drawChart() {
+    const datos = {{ datosJson|raw }};
+    const fechas = datos.map(dato => new Date(dato.fecha));
+    const precios = datos.map(dato => dato.precio);
+
+    const data = new google.visualization.DataTable();
+    data.addColumn('datetime', 'Fecha');
+    data.addColumn('number', 'Precios');
+    for (let i = 0; i < fechas.length; i++) {
+        data.addRow([fechas[i], precios[i]]);
+    }
+
+    const options = {
+    width: 950,
+    height: 450,
+    legend: { position: 'none' },
+    seriesType: 'bars',
+    series: { 0: { color: '#3366cc' } },
+    vAxis: {
+        format: 'currency',
+        minValue: 0
+    },
+    hAxis: {
+        slantedText: true,
+        slantedTextAngle: 45,
+       
+    }
+};
+
+    function updateChartSize() {
+        if (window.innerWidth < 600) {
+            options.width = '100%';
+            options.height = 330;
+        } else {
+            options.width = 950;
+            options.height = 450;
+        }
+
+        const chart = new google.visualization.ComboChart(document.getElementById('chart'));
+        chart.draw(data, options);
+    }
+
+    // Llamada inicial al cargar la página
+    updateChartSize();
+
+    // Actualizar al cambiar el tamaño de la ventana
+    window.addEventListener('resize', updateChartSize);
+}
+
+    </script>
+{% endblock %}

@@ -17,6 +17,7 @@ use Stripe\Stripe;
 use Stripe\Charge;
 
 
+
 class InvoiceController extends AbstractController
 {
     #[Route('/facturas', name: 'facturas')]
@@ -38,14 +39,14 @@ class InvoiceController extends AbstractController
     }
 
 
-    #[Route('/createInvoice/{userB}/{userS}/{money}/{description}', name: 'createInvoice')]
+    #[Route('/createInvoice/{userS}/{money}/{description}', name: 'createInvoice')]
 public function createInvoice($userB, $userS, $money, $description, Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
 {
 
     $invoice = new Invoice();
 
-    $b =  $doctrine->getRepository(userB::class)->findOneBy(['id'=>$userB]);
-    $s =  $doctrine->getRepository(userS::class)->findOneBy(['id'=>$userS]);
+    $b =  $this->getUser();
+    $s =  $doctrine->getRepository(userS::class)->findOneBy(['email'=>$userS]);
     $p =  $doctrine->getRepository(InvoiceState::class)->findOneBy(['id'=>2]);
 
     $invoice->setUserB($b);
