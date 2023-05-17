@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registro de Servicios
+{% endblock %}
+
+{% block stylesheets %}
+	{{parent()}}
+	<style>
+		body {
+			background-color: #f5f5f5;
+
+		}
+
+		button[type="submit"] {
+			margin-top: 30px;
+			display: block;
+			width: 100%;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			background-color: #007bff;
+			color: #fff;
+			font-size: 16px;
+			cursor: pointer;
+		}
+
+		button[type="submit"]:hover {
+			background-color: #0069d9;
+		}
+
+
+		.container {
+			max-width: 100%;
+		}
+		button[type="submit"] {
+			font-size: 14px;
+		}
+		input[type="text"],
+		input[type="email"],
+		input[type="password"] {
+			font-size: 14px;
+			padding: 8px;
+			border-radius: 4px;
+			border: 1px solid #ccc;
+			width: 100%;
+		}
+		.form-group {
+			margin-bottom: 10px;
+		}
+		label {
+			font-size: 14px;
+		}
+		h2 {
+			font-size: 24px;
+		}
+		p {
+			font-size: 14px;
+		}
+		.btn-block {
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	{{parent()}}
+	<div class="container">
+		<h2 class="my-4 ml-4">Nuevo Servicio</h2>
+		{{ form_start(registration_form, {'attr': {'class': 'form'}}) }}
+		<div class="form-group">
+			{{ form_label(registration_form.ownerName, 'Nombre del propietario') }}
+			{{ form_widget(registration_form.ownerName, {'attr': {'class': 'form-control', 'placeholder': 'Pedro'}}) }}
+		</div>
+		<div class="form-group">
+			{{ form_label(registration_form.ownerLastname, 'Apellido del propietario') }}
+			{{ form_widget(registration_form.ownerLastname, {'attr': {'class': 'form-control', 'placeholder': 'García'}}) }}
+		</div>
+		<div class="form-group">
+			{{ form_label(registration_form.email, 'Correo') }}
+			{{ form_widget(registration_form.email, {'attr': {'class': 'form-control', 'placeholder': 'tucorreo@example.com'}}) }}
+		</div>
+		<div class="form-group">
+			{{ form_label(registration_form.premisesName, 'Nombre del Establecimiento') }}
+			{{ form_widget(registration_form.premisesName, {'attr': {'class': 'form-control', 'placeholder': 'Calle ...'}}) }}
+		</div>
+		<div class="form-group">
+			{{ form_label(registration_form.password, 'Contraseña') }}
+			{{ form_widget(registration_form.password, {'attr': {'class': 'form-control', 'placeholder': 'Inserte su contraseña'}}) }}
+			{{ form_widget(registration_form.roles, {'attr': {'style': 'display:none'}}) }}
+		</div>
+		<div class="form-group">
+			{{ form_label(registration_form.image, 'Foto del Establecimiento', {'label_attr': {'class': 'col-form-label'}}) }}
+			<div class="custom-file">
+				{{ form_widget(registration_form.image, {'attr': {'class': 'custom-file-input', 'id': 'customFileInput'}}) }}
+				<label class="custom-file-label" for="customFileInput">Seleccionar archivo</label>
+			</div>
+		</div>
+		<div class="form-group">
+			{{ form_label(registration_form.address, 'Dirección') }}
+			{{ form_widget(registration_form.address, {'attr': {'class': 'form-control', 'placeholder': 'Calle ...'}}) }}
+		</div>
+		<div class="form-group">
+			{{ form_label(registration_form.city, 'Ciudad') }}
+			{{ form_widget(registration_form.city, {'attr': {'class': 'form-control', 'placeholder': 'Madrid...'}}) }}
+		</div>
+		<div class="form-group">
+			{{ form_label(registration_form.type, 'Tipo') }}
+			{{ form_widget(registration_form.type, {'attr': {'class': 'form-control', 'placeholder': 'Belleza, Peluquería, Mecanico...'}}) }}
+		</div>
+		<button type="submit" class="btn btn-primary">Registrar</button>
+	</div>
+    <br>
+{% endblock %}

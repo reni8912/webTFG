@@ -138,10 +138,10 @@ class UserS implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getOwnerName(): ?string
     {
-        return $this->owner;
+        return $this->ownerName;
     }
 
-    public function setOwner(string $ownerName): self
+    public function setOwnerName(string $ownerName): self
     {
         $this->ownerName = $ownerName;
 

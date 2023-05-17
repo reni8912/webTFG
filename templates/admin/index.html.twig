@@ -48,7 +48,7 @@ h1 {
 
 @media screen and (max-width: 480px) {
         h1 {
-        font-size: 45px;
+        font-size: 55px;
         margin-bottom: 30px;
     }
 
@@ -86,9 +86,9 @@ h1 {
     <div class="container">
             <h1 class="text-danger">Administrar</h1>
         <div class="button-container">
-            <button class="button ">Manejar Facturas</button>
+            <button class="button"><a class="nav-link text-white" href="{{path('adminInvoice')}}">Manejar Facturas</a></button>
             <span class="button-space "></span>
-            <button class="button ">Nuevo Servicios</button>
+            <button class="button "><a class="nav-link text-white" href="{{path('adminService')}}">Nuevos Servicios</a></button>
         </div>
     </div>
 {% endblock %}
