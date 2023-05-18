@@ -65,7 +65,7 @@ class AdminController extends AbstractController
             $hashedPassword = $passwordHasher->hashPassword($user, $plaintextPassword);
             $user->setPassword($hashedPassword);
     
-            $entityManager->remove($user);
+            $entityManager->persist($user);
             $entityManager->flush();
     
             return $this->redirectToRoute('adminService');

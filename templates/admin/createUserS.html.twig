@@ -108,7 +108,12 @@
 			{{ form_label(registration_form.type, 'Tipo') }}
 			{{ form_widget(registration_form.type, {'attr': {'class': 'form-control', 'placeholder': 'Belleza, Peluquería, Mecanico...'}}) }}
 		</div>
+		
 		<button type="submit" class="btn btn-primary">Registrar</button>
+		{{ form_end(registration_form) }}
+		
+
+
 	</div>
     <br>
 {% endblock %}
