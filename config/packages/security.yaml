@@ -42,6 +42,8 @@ security:
     access_control:
           - { path: ^/createInvoice, roles: ROLE_USER  }
           - { path: ^/admin, roles: ROLE_ADMIN }
+          - { path: ^/facturas, roles: ROLE_USER }
+          - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
     security:

@@ -31,7 +31,7 @@ class SellerController extends AbstractController
         $result = json_decode($response->getBody()->getContents(), true);
         $city = $result['regionName'];
   
-        $users = $doctrine->getRepository(UserS::class)->findBy(['city' => $city],['id' => 'ASC']);
+        $users = $doctrine->getRepository(UserS::class)->findBy(['city' => 'madrid'],['id' => 'ASC']);
         
     
         $sellers = [];
