@@ -64,6 +64,11 @@ class AdminController extends AbstractController
             $plaintextPassword = $registrationForm->get('password')->getData();
             $hashedPassword = $passwordHasher->hashPassword($user, $plaintextPassword);
             $user->setPassword($hashedPassword);
+
+            $file = $registrationForm->get('image')->getData();
+            if ($file !== null) {
+                $user->setImage(file_get_contents($file->getPathname()));
+            }
     
             $entityManager->persist($user);
             $entityManager->flush();

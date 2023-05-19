@@ -29,9 +29,6 @@ class UserSType extends AbstractType
             ->add('ownerName')
             ->add('premisesName')
             ->add('ownerLastname')
-            ->add('field', null, [
-                'empty_data' => null,
-            ])
             ->add('image', FileType::class, [
                 
             ])
