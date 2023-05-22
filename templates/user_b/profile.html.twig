@@ -6,74 +6,142 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
-         body {
+        body {
             background-color: white;
+            overflow-x:hidden;
+            overflow-y:hidden;
         }
+
+        /* Estilos para pantallas grandes y normales */
+        @media (min-width: 992px) {
+            .table-responsive {
+                max-height: 430px; /* Ajusta el valor según sea necesario */
+                position:relative;
+                left:130px;
+            }
+            .choser{position:relative; top:-400px; width:15%; left:1030px;}
+
+        }
+
+        /* Estilos para dispositivos móviles */
+        @media (max-width: 576px) {
+            .table-responsive {
+                min-height: 400px; /* Ajusta el valor según sea necesario */
+            }
+            .choser{position:relative; top:-170px;}
+        }
+
+        
     </style>
 {% endblock %}
+
 {% block body %}
-{{ parent() }}
+    {{ parent() }}
     <div class="container">
         <h1 class="text-dark m-4 mt-5" style="text-align: center; font-family: Arial, sans-serif;">Gastos de {{ app.user.name }}</h1>
-        <div id="chart" style="display: flex; justify-content: center;">
+        <br>
+        <div class="table-responsive">
+            <canvas id="myChart" style="display: flex; justify-content: center;"></canvas>
+        </div>
+        <div class="choser mt-4 ml-2 mr-2">
+            <select id="opcion" style="width: 100%;" onchange="updateChart(this.value)">
+                <option value="todosLosAnios">Todos los años</option>
+                <option value="esteAnio">Este año</option>
+                <option value="esteMes">Este mes</option>
+            </select>
+        </div>
     </div>
 {% endblock %}
 
-
 {% block javascripts %}
-{{parent()}}
-    <script>
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script>
+    let chart = null; // Variable global para el objeto del gráfico
 
-       function drawChart() {
-    const datos = {{ datosJson|raw }};
-    const fechas = datos.map(dato => new Date(dato.fecha));
-    const precios = datos.map(dato => dato.precio);
+    function updateChart(opcion) {
+        const ctx = document.getElementById('myChart');
+        const datosJson = {{ datosJson|raw }};
+        let fechas = [];
+        let precios = [];
 
-    const data = new google.visualization.DataTable();
-    data.addColumn('datetime', 'Fecha');
-    data.addColumn('number', 'Precios');
-    for (let i = 0; i < fechas.length; i++) {
-        data.addRow([fechas[i], precios[i]]);
-    }
-
-    const options = {
-    width: 950,
-    height: 450,
-    legend: { position: 'none' },
-    seriesType: 'line',
-    series: { 0: { color: '#3366cc' } },
-    vAxis: {
-        format: 'currency',
-        minValue: 0
-    },
-    hAxis: {
-        slantedText: true,
-        slantedTextAngle: 45,
-       
-    }
-};
-
-    function updateChartSize() {
-        if (window.innerWidth < 600) {
-            options.width = '100%';
-            options.height = 330;
-        } else {
-            options.width = 950;
-            options.height = 450;
+        if (chart) {
+            // Destruir el gráfico existente si hay uno
+            chart.destroy();
         }
 
-        const chart = new google.visualization.ComboChart(document.getElementById('chart'));
-        chart.draw(data, options);
+        if (opcion === 'esteAnio') {
+            const anioActual = new Date().getFullYear();
+            for (let i = 0; i < datosJson.length; i++) {
+                const fecha = new Date(datosJson[i].fecha);
+                if (fecha.getFullYear() === anioActual) {
+                    const fechaFormateada = fecha.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                    fechas.push(fechaFormateada);
+                    precios.push(datosJson[i].precio);
+                }
+            }
+        } else if (opcion === 'todosLosAnios') {
+            for (let i = 0; i < datosJson.length; i++) {
+                const fecha = new Date(datosJson[i].fecha);
+                const fechaFormateada = fecha.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                });
+                fechas.push(fechaFormateada);
+                precios.push(datosJson[i].precio);
+            }
+        } else if (opcion === 'esteMes') {
+            const mesActual = new Date().getMonth();
+            const anioActual = new Date().getFullYear();
+            for (let i = 0; i < datosJson.length; i++) {
+                const fecha = new Date(datosJson[i].fecha);
+                const mes = fecha.getMonth();
+                const anio = fecha.getFullYear();
+                if (mes === mesActual && anio === anioActual) {
+                    const fechaFormateada = fecha.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                    fechas.push(fechaFormateada);
+                    precios.push(datosJson[i].precio);
+                }
+            }
+        }
+
+        // Ordenar fechas de menor a mayor
+        fechas.sort((a, b) => {
+            const dateA = new Date(a);
+            const dateB = new Date(b);
+            return dateA - dateB;
+        });
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: fechas,
+                datasets: [{
+                    label: 'Precios',
+                    data: precios,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        chart.update();
     }
-
-    // Llamada inicial al cargar la página
-    updateChartSize();
-
-    // Actualizar al cambiar el tamaño de la ventana
-    window.addEventListener('resize', updateChartSize);
-}
-
-    </script>
+      window.onload = function() {
+            const opcionPredeterminada = 'todosLosAnios';
+            updateChart(opcionPredeterminada);
+        };
+</script>
 {% endblock %}

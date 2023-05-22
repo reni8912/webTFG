@@ -64,7 +64,7 @@ class UserBController extends AbstractController
         
         foreach ($invoice as $invoice) {
             $datos[] = [
-                'fecha' => $invoice->getCreationDate()->format('Y-m-d H:i:s'), 
+                'fecha' => $invoice->getCreationDate()->format('Y-m-d'), 
                 'precio' => $invoice->getMoney(),
             ];
         }
