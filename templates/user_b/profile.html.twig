@@ -43,13 +43,14 @@
         <div class="table-responsive">
             <canvas id="myChart" style="display: flex; justify-content: center;"></canvas>
         </div>
-        <div class="choser mt-4 ml-2 mr-2">
-            <select id="opcion" style="width: 100%;" onchange="updateChart(this.value)">
-                <option value="todosLosAnios">Todos los años</option>
-                <option value="esteAnio">Este año</option>
-                <option value="esteMes">Este mes</option>
-            </select>
-        </div>
+<div class="choser mt-4 ml-2 mr-2">
+    <select class="form-select" id="opcion" style="width: 100%;" onchange="updateChart(this.value)">
+        <option value="todosLosAnios">Todos los años</option>
+        <option value="esteAnio">Este año</option>
+        <option value="esteMes">Este mes</option>
+    </select>
+</div>
+
     </div>
 {% endblock %}
 

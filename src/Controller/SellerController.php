@@ -61,7 +61,7 @@ class SellerController extends AbstractController
         $response = $httpClient->get('http://ip-api.com/json/');
         $result = json_decode($response->getBody()->getContents(), true);
         $city = $result['regionName'];
-        
+       
         $users = $doctrine->getRepository(UserS::class)->findBy(['city' => $city, 'type' => $type],['id' => 'ASC']);
        
     
