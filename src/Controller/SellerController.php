@@ -12,7 +12,6 @@ use GuzzleHttp\Client;
 use Knp\Component\Pager\PaginatorInterface;
 
 
-
 class SellerController extends AbstractController
 {
     public function encodeImage($image)
@@ -20,8 +19,7 @@ class SellerController extends AbstractController
         $data = stream_get_contents($image);
         $encodedImage = base64_encode($data);
         return $encodedImage;
-    }
-    
+    } 
 
     #[Route('', name: 'index')]
     public function index(PaginatorInterface $paginator,ManagerRegistry $doctrine,Request $request, Client $httpClient): Response
@@ -33,7 +31,6 @@ class SellerController extends AbstractController
   
         $users = $doctrine->getRepository(UserS::class)->findBy(['city' => $city],['id' => 'ASC']);
         
-    
         $sellers = [];
     
         foreach ($users as $user) {
@@ -64,7 +61,6 @@ class SellerController extends AbstractController
        
         $users = $doctrine->getRepository(UserS::class)->findBy(['city' => $city, 'type' => $type],['id' => 'ASC']);
        
-    
         $sellers = [];
     
         foreach ($users as $user) {

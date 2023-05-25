@@ -89,7 +89,6 @@ class AdminController extends AbstractController
             if (!$invoice) {
                 throw $this->createNotFoundException('No Invoice found for id ' . $id);
             }
-               
 
             $entityManager->remove($invoice);
             $entityManager->flush();

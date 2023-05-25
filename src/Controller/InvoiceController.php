@@ -17,7 +17,6 @@ use Stripe\Stripe;
 use Stripe\Charge;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Core\Security;
- 
 
 
 class InvoiceController extends AbstractController
@@ -39,7 +38,6 @@ class InvoiceController extends AbstractController
             'invoices'=>$pagination
         ]);
     }
-
 
     #[Route('/createInvoice/{userS}/{money}/{description}', name: 'createInvoice')]
     #[IsGranted("ROLE_USER")]
@@ -71,7 +69,6 @@ public function createInvoice( $userS, Security $security, $money, $description,
     return $this->redirectToRoute('facturas');
 
 }
-  
 
 #[Route('/stripe{id}', name: 'stripe')]
 public function stripe($id,ManagerRegistry $doctrine): Response
@@ -85,7 +82,6 @@ public function stripe($id,ManagerRegistry $doctrine): Response
         'invoice' => $invoices,
     ]);
 }
-
 
 public function createCharge(Request $request)
 {
